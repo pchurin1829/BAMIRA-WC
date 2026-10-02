@@ -1,9 +1,9 @@
 # Especificación del Catálogo BAMIRA — v1
 
-> Versión: 1.0
-> Fecha: 2026-10-02
-> Alcance: estructura global del catálogo WooCommerce (categorías, atributos globales y términos). No incluye productos reales ni variaciones en esta versión.
-> Script asociado: `tools/catalog/seed-bamira-catalog.php` (solo estructura, idempotente, no ejecutado en esta tarea).
+> Versión: 1.1
+> Fecha: 2026-10-02 (v1.0) / actualización CATÁLOGO-2B+3
+> Alcance: estructura global del catálogo WooCommerce (categorías, atributos globales y términos) + 8 productos base en borrador. Las variaciones físicas se generan en una fase posterior.
+> Scripts asociados: `tools/catalog/seed-bamira-catalog.php` (estructura, CATÁLOGO-2) y `tools/catalog/seed-bamira-products.php` (término Naranja / Gris + 8 productos base, CATÁLOGO-2B+3). Ambos idempotentes, no ejecutados en esta tarea.
 
 ---
 
@@ -95,11 +95,12 @@ Valores iniciales (nombre → sigla para SKU):
 | Azul            | AZU       |
 | Marrón          | MAR       |
 | Celeste         | CEL       |
+| Naranja / Gris  | NGR       |
 
 Reglas:
 
 1. **No separar técnicamente los estampados en otro atributo.** Diseños multicolor, estampados o combinaciones se cargan como un término más del mismo atributo `Color / Diseño`.
-2. Ejemplo multicolor: `Naranja / Gris` → sigla `NGR`.
+2. `Naranja / Gris` → sigla `NGR` es el **ejemplo inicial** de diseño multicolor (incorporado en CATÁLOGO-2B). Futuros ejemplos: `Negro / Blanco`, `Azul / Celeste`, `Multicolor`, etc., como términos nuevos sin cambiar el modelo.
 3. Cada término tiene una sigla SKU única, en mayúsculas, 3 caracteres. Documentar la sigla al crear el término (no es el slug de WooCommerce; el slug sigue las reglas de `sanitize_title`, la sigla vive en la especificación y en el generador de SKU).
 4. Nuevos colores/diseños se agregan como términos nuevos; la sigla debe ser única y no reutilizada.
 5. **Imagen por Color/Diseño** (ver sección G): cada término de este atributo debe poder asociarse a una imagen representativa del color/diseño para el selector de variaciones.
@@ -137,7 +138,7 @@ Notas:
 | Atributo (etiqueta) | Slug WooCommerce    | ¿Variación? | Valores v1 |
 |---------------------|---------------------|-------------|------------|
 | Talle               | `pa_talle`          | Sí          | XS, S, M, L |
-| Color / Diseño      | `pa_color-diseno`   | Sí          | Blanco, Negro, Verde aceituna, Azul, Marrón, Celeste |
+| Color / Diseño      | `pa_color-diseno`   | Sí          | Blanco, Negro, Verde aceituna, Azul, Marrón, Celeste, Naranja / Gris |
 | Línea               | `pa_linea`          | No          | Mujer, Hombre, Unisex |
 | Uso                 | `pa_uso`            | No          | Entrenamiento, Competición, Baño, Casual |
 
@@ -241,6 +242,34 @@ Campos mínimos por producto (padre variable). Entre paréntesis, origen/impleme
 
 ---
 
+## H) Productos base (CATÁLOGO-2B + CATÁLOGO-3)
+
+Los productos base representan **familias/modelos iniciales**: un producto padre variable por cada tipo de prenda, con los atributos configurados pero **sin variaciones físicas creadas**.
+
+### H.1. Listado
+
+| # | Nombre base            | SKU padre      | Categoría                                          | Línea  | Uso           |
+|---|------------------------|----------------|----------------------------------------------------|--------|---------------|
+| 1 | Malla deportiva base   | BAM-MDEP-BASE  | Indumentaria deportiva > Malla deportiva           | Mujer  | Entrenamiento |
+| 2 | Short deportivo base   | BAM-SHO-BASE   | Indumentaria deportiva > Short deportivo           | Unisex | Entrenamiento |
+| 3 | Remera deportiva base  | BAM-REM-BASE   | Indumentaria deportiva > Remera deportiva          | Unisex | Entrenamiento |
+| 4 | Musculosa deportiva base | BAM-MUS-BASE | Indumentaria deportiva > Musculosa deportiva       | Unisex | Entrenamiento |
+| 5 | Top deportivo base     | BAM-TOP-BASE   | Indumentaria deportiva > Top deportivo             | Mujer  | Entrenamiento |
+| 6 | Calza corta base       | BAM-CALC-BASE  | Indumentaria deportiva > Calza corta               | Mujer  | Entrenamiento |
+| 7 | Calza larga base       | BAM-CALL-BASE  | Indumentaria deportiva > Calza larga               | Mujer  | Entrenamiento |
+| 8 | Malla de baño base     | BAM-MBA-BASE   | Urbano > Malla de baño                             | Mujer  | Baño          |
+
+### H.2. Reglas
+
+1. **Estado inicial: `draft` (Borrador).** Ningún producto base es visible en la tienda pública. Un producto en borrador puede estar completamente configurado administrativamente (categoría, atributos de variación declarados, Línea/Uso) sin aparecer en la tienda.
+2. **Tipo WooCommerce: `variable`.** Atributos para variación: `pa_talle` (XS, S, M, L) y `pa_color-diseno` (7 términos, incluido `Naranja / Gris`). Atributos NO usados para variación: `pa_linea`, `pa_uso`.
+3. **Sin combinaciones físicas Talle × Color todavía.** Las variaciones reales (hijos con SKU `BAM-TIPO-MODELO-COLOR-TALLE`, precio y stock) se generarán posteriormente según la disponibilidad efectiva de talles y colores de cada modelo.
+4. **Sin asignar todavía:** precio, costo, stock, imágenes, proveedor, promociones.
+5. **SKU padre `BAM-<TIPO>-BASE`** (p. ej. `BAM-REM-BASE`): es el identificador de idempotencia. Si ya existe un producto con ese SKU, el seed informa `EXISTS` y no lo duplica ni lo modifica destructivamente.
+6. Script: `tools/catalog/seed-bamira-products.php` (idempotente; crea como única estructura el término `Naranja / Gris` si falta; aborta con `ERROR` ante cualquier otra estructura faltante sin crearla silenciosamente).
+
+---
+
 ## Procedimiento de ejecución
 
 > El script `tools/catalog/seed-bamira-catalog.php` **NO fue ejecutado** en esta tarea. El procedimiento siguiente es para ejecutarlo de forma segura en una instalación WordPress/WooCommerce real (staging o producción) cuando se autorice.
@@ -314,7 +343,7 @@ DONE. created=3 exists=24 errors=0
 2. **Atributos:** `Productos → Atributos`. Verificar 4 filas: `Talle`, `Color / Diseño`, `Línea`, `Uso`.
 3. **Términos:** en `Productos → Atributos`, clic en `Configurar términos` de cada atributo y verificar la lista:
    - Talle: XS, S, M, L.
-   - Color / Diseño: Blanco, Negro, Verde aceituna, Azul, Marrón, Celeste.
+   - Color / Diseño: Blanco, Negro, Verde aceituna, Azul, Marrón, Celeste, Naranja / Gris.
    - Línea: Mujer, Hombre, Unisex.
    - Uso: Entrenamiento, Competición, Baño, Casual.
 
@@ -341,3 +370,40 @@ wp term list pa_uso --fields=term_id,name,slug --format=table
 - El script **solo** crea categorías, atributos y términos. **No** crea productos ni variaciones, **no** modifica los productos de prueba existentes y **no** elimina nada.
 - Si WooCommerce no está activo, aborta con mensaje `ERROR: WooCommerce no disponible` sin hacer cambios.
 - Ante cualquier duda, ejecutar primero en staging con backup y validar con el procedimiento de esta sección antes de tocar producción.
+
+### 6. Seed de productos base (CATÁLOGO-2B + CATÁLOGO-3)
+
+> Tampoco ejecutado en esta tarea. Ejecutar solo cuando se autorice, después del seed de estructura (CATÁLOGO-2).
+
+```bash
+wp eval-file tools/catalog/seed-bamira-products.php
+```
+
+Salida esperada (primera ejecución, suponiendo estructura CATÁLOGO-2 ya creada):
+
+```text
+[TERM] pa_color-diseno: Blanco ... EXISTS
+[TERM] pa_color-diseno: Negro ... EXISTS
+[TERM] pa_color-diseno: Verde aceituna ... EXISTS
+[TERM] pa_color-diseno: Azul ... EXISTS
+[TERM] pa_color-diseno: Marrón ... EXISTS
+[TERM] pa_color-diseno: Celeste ... EXISTS
+[TERM] pa_color-diseno: Naranja / Gris ... CREATED
+[PRODUCT] Malla deportiva base [BAM-MDEP-BASE] ... CREATED (id=... status=draft type=variable)
+...
+DONE. created=9 exists=6 errors=0
+```
+
+Verificación posterior:
+
+```bash
+# Productos base por SKU (deben existir los 8, todos draft)
+wp wc product list --sku=BAM-MDEP-BASE --fields=id,name,sku,status,type --format=table
+# Repetir para BAM-SHO-BASE, BAM-REM-BASE, BAM-MUS-BASE, BAM-TOP-BASE,
+# BAM-CALC-BASE, BAM-CALL-BASE, BAM-MBA-BASE.
+
+# Término multicolor
+wp term list pa_color-diseno --fields=term_id,name,slug --format=table
+```
+
+**Verificación de idempotencia:** segunda ejecución ⇒ `created=0`, `errors=0`, todo `EXISTS`, sin duplicados y sin variaciones hijas creadas.
