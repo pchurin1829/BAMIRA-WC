@@ -1,0 +1,28 @@
+# Secrets / environment
+.env
+.env.*
+!.env.example
+
+# Mercado Pago / credenciales locales
+Datos MP prueba.txt
+
+# WordPress backups / exports
+*.wpress
+*.sql
+*.sql.gz
+*.bak
+
+# Logs
+*.log
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
+
+docs/Pago donweb VPS.pdf
