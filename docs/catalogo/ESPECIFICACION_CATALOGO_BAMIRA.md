@@ -1,9 +1,9 @@
 # Especificación del Catálogo BAMIRA — v1
 
-> Versión: 1.1
-> Fecha: 2026-10-02 (v1.0) / actualización CATÁLOGO-2B+3
-> Alcance: estructura global del catálogo WooCommerce (categorías, atributos globales y términos) + 8 productos base en borrador. Las variaciones físicas se generan en una fase posterior.
-> Scripts asociados: `tools/catalog/seed-bamira-catalog.php` (estructura, CATÁLOGO-2) y `tools/catalog/seed-bamira-products.php` (término Naranja / Gris + 8 productos base, CATÁLOGO-2B+3). Ambos idempotentes, no ejecutados en esta tarea.
+> Versión: 1.2
+> Fecha: 2026-10-02 (v1.0) / actualización CATÁLOGO-2B+3 / actualización CATÁLOGO-4
+> Alcance: estructura global del catálogo WooCommerce (categorías, atributos globales y términos) + 8 productos base en borrador + variaciones iniciales Talle × Color para 5 productos (padres en draft, sin precio/stock/imágenes).
+> Scripts asociados: `tools/catalog/seed-bamira-catalog.php` (estructura, CATÁLOGO-2), `tools/catalog/seed-bamira-products.php` (término Naranja / Gris + 8 productos base, CATÁLOGO-2B+3) y `tools/catalog/seed-bamira-variations.php` (términos Gris/Verde + 80 variaciones, CATÁLOGO-4). Todos idempotentes, no ejecutados en esta tarea.
 
 ---
 
@@ -267,6 +267,73 @@ Los productos base representan **familias/modelos iniciales**: un producto padre
 4. **Sin asignar todavía:** precio, costo, stock, imágenes, proveedor, promociones.
 5. **SKU padre `BAM-<TIPO>-BASE`** (p. ej. `BAM-REM-BASE`): es el identificador de idempotencia. Si ya existe un producto con ese SKU, el seed informa `EXISTS` y no lo duplica ni lo modifica destructivamente.
 6. Script: `tools/catalog/seed-bamira-products.php` (idempotente; crea como única estructura el término `Naranja / Gris` si falta; aborta con `ERROR` ante cualquier otra estructura faltante sin crearla silenciosamente).
+
+---
+
+## I) Variaciones iniciales (CATÁLOGO-4: Talle × Color)
+
+### I.1. Colores iniciales de producción
+
+| Nombre visible | Sigla SKU | Estado previo     |
+|----------------|-----------|-------------------|
+| Blanco         | BLA       | Existía (CAT-2)   |
+| Negro          | NEG       | Existía (CAT-2)   |
+| Gris           | GRI       | Asegurado por CAT-4 (EXISTS o CREATED) |
+| Verde          | VER       | Asegurado por CAT-4 (EXISTS o CREATED) |
+
+Los demás términos globales de `pa_color-diseno` (`Verde aceituna`, `Azul`, `Marrón`, `Celeste`, `Naranja / Gris`) **no se eliminan ni modifican**; coexisten y simplemente no se usan en estas variaciones iniciales.
+
+### I.2. Talles iniciales
+
+XS, S, M, L (términos existentes de `pa_talle`, creados en CATÁLOGO-2; CATÁLOGO-4 no crea talles).
+
+### I.3. Productos incluidos
+
+| Producto padre       | SKU padre      | Código tipo |
+|----------------------|----------------|-------------|
+| Top deportivo        | BAM-TOP-BASE   | TOP         |
+| Short deportivo      | BAM-SHO-BASE   | SHO         |
+| Calza larga          | BAM-CALL-BASE  | CALL        |
+| Calza corta          | BAM-CALC-BASE  | CALC        |
+| Remera deportiva     | BAM-REM-BASE   | REM         |
+
+Fuera de CATÁLOGO-4 (permanecen como borradores sin variaciones): Malla deportiva, Musculosa deportiva, Malla de baño.
+
+### I.4. Matriz y totales
+
+Matriz inicial por producto (la misma para los 5):
+
+```text
+             Blanco  Negro  Gris  Verde
+XS              X      X      X      X
+S               X      X      X      X
+M               X      X      X      X
+L               X      X      X      X
+```
+
+- 4 talles × 4 colores = **16 variaciones por producto**.
+- 5 productos × 16 = **80 variaciones totales**.
+- La matriz está **centralizada y configurable por producto** en `tools/catalog/seed-bamira-variations.php` (`$bamira_v_products`): habilitar o deshabilitar combinaciones concretas requiere solo editar la entrada del producto, sin reescribir la lógica.
+
+### I.5. SKU de variación
+
+Formato: `BAM-<TIPO>-BASE-<COLOR>-<TALLE>`. Ejemplos: `BAM-TOP-BASE-NEG-XS`, `BAM-TOP-BASE-VER-M`, `BAM-SHO-BASE-BLA-L`, `BAM-CALL-BASE-GRI-S`, `BAM-CALC-BASE-NEG-M`, `BAM-REM-BASE-VER-L`. El SKU es único y es el mecanismo principal de idempotencia.
+
+### I.6. Estado comercial
+
+- Los 5 productos padre **permanecen en `draft`**: aunque existan las 80 variaciones, nada aparece en la tienda pública.
+- Las variaciones **no tienen** precio, precio promocional, stock inicial, backorders, imagen propia, proveedor ni costo.
+- Cada padre conserva `pa_talle` y `pa_color-diseno` (valores CATÁLOGO-4) con `variation = true`, y `pa_linea` / `pa_uso` como no-variables.
+
+> **Aclaración expresa:** la existencia de un término global de Color/Diseño NO significa que todos los productos deban fabricarse en ese color. La disponibilidad comercial se determina por la matriz de variaciones de cada producto.
+
+### I.7. Ejecución (cuando se autorice; no ejecutado en esta tarea)
+
+```bash
+wp eval-file tools/catalog/seed-bamira-variations.php
+```
+
+Primera ejecución esperada: `terms_created=2, products_checked=5, variations_created=80, variations_exists=0, errors=0` (si Gris/Verde no existían). Segunda ejecución: `terms_created=0, products_checked=5, variations_created=0, variations_exists=80, errors=0`.
 
 ---
 
