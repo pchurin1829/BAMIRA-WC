@@ -1,28 +1,8 @@
 <?php
 /**
- * BAMIRA — Seed de Catálogo Real · Etapa 1.
- *
- * Alcance:
- *  - Asegura términos de talle ('1', '2', '3') en `pa_talle` sin alterar términos previos.
- *  - Asegura términos de color ('Negro', 'Bordo Frambuesa', 'Azul', 'Petróleo', 'Chocolate') en `pa_color-diseno`.
- *  - Asegura categorías padre ('Indumentaria deportiva', 'Urbano') y subcategorías requeridas.
- *  - Crea/actualiza 8 productos padre base en estado borrador (`draft`), tipo `variable`,
- *    configurados con atributos `pa_talle` y `pa_color-diseno` para variaciones.
- *  - Crea/actualiza 66 variaciones hijas (`WC_Product_Variation`) con stock individual asignado,
- *    gestión de inventario activa (`manage_stock = yes`), estado `instock`,
- *    SIN precios (precios vacíos) y SIN imágenes asignadas.
- *  - Totaliza y valida exactamente 427 unidades físicas de stock.
- *
- * Idempotencia:
- *  - Padres identificados unívocamente por SKU: `BAM-<MODELO>`.
- *  - Variaciones identificadas unívocamente por SKU: `BAM-<MODELO>-<COLOR>-T<TALLE>`.
- *  - Si un ítem ya existe, reporta EXISTS y actualiza inventario/atributos sin duplicar registros.
- *
- * Uso previsto (no ejecutar automáticamente; solo cuando se autorice):
- *   wp eval-file tools/catalog/seed-bamira-real-catalog.php
- *
- * @package Bamira
- * @version 1.1
+ * BAMIRA: estructura inicial, 8 modelos y 66 variaciones, sin cantidades confirmadas.
+ * Solo corrige inventario en borradores sin precio. Publicados y datos comerciales se preservan.
+ * Los Excel anteriores son referencias históricas, no fuentes de inventario operativo.
  */
 
 // ---------------------------------------------------------------------------
@@ -90,18 +70,18 @@ $bamira_real_catalog = array(
 		'talles'     => array( '1', '2', '3' ),
 		'colores'    => array( 'Negro', 'Bordo Frambuesa', 'Azul', 'Petróleo' ),
 		'variations' => array(
-			array( 'color' => 'Negro',           'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Negro',           'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Negro',           'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Azul',            'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Azul',            'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Azul',            'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Petróleo',        'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Petróleo',        'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Petróleo',        'talle' => '3', 'stock' => 4 ),
+			array( 'color' => 'Negro',           'talle' => '1' ),
+			array( 'color' => 'Negro',           'talle' => '2' ),
+			array( 'color' => 'Negro',           'talle' => '3' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '1' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '2' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '3' ),
+			array( 'color' => 'Azul',            'talle' => '1' ),
+			array( 'color' => 'Azul',            'talle' => '2' ),
+			array( 'color' => 'Azul',            'talle' => '3' ),
+			array( 'color' => 'Petróleo',        'talle' => '1' ),
+			array( 'color' => 'Petróleo',        'talle' => '2' ),
+			array( 'color' => 'Petróleo',        'talle' => '3' ),
 		),
 	),
 	array(
@@ -114,18 +94,18 @@ $bamira_real_catalog = array(
 		'talles'     => array( '1', '2', '3' ),
 		'colores'    => array( 'Negro', 'Bordo Frambuesa', 'Azul', 'Petróleo' ),
 		'variations' => array(
-			array( 'color' => 'Negro',           'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Negro',           'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Negro',           'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Azul',            'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Azul',            'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Azul',            'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Petróleo',        'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Petróleo',        'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Petróleo',        'talle' => '3', 'stock' => 4 ),
+			array( 'color' => 'Negro',           'talle' => '1' ),
+			array( 'color' => 'Negro',           'talle' => '2' ),
+			array( 'color' => 'Negro',           'talle' => '3' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '1' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '2' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '3' ),
+			array( 'color' => 'Azul',            'talle' => '1' ),
+			array( 'color' => 'Azul',            'talle' => '2' ),
+			array( 'color' => 'Azul',            'talle' => '3' ),
+			array( 'color' => 'Petróleo',        'talle' => '1' ),
+			array( 'color' => 'Petróleo',        'talle' => '2' ),
+			array( 'color' => 'Petróleo',        'talle' => '3' ),
 		),
 	),
 	array(
@@ -138,18 +118,18 @@ $bamira_real_catalog = array(
 		'talles'     => array( '1', '2', '3' ),
 		'colores'    => array( 'Negro', 'Bordo Frambuesa', 'Azul', 'Petróleo' ),
 		'variations' => array(
-			array( 'color' => 'Negro',           'talle' => '1', 'stock' => 8 ),
-			array( 'color' => 'Negro',           'talle' => '2', 'stock' => 10 ),
-			array( 'color' => 'Negro',           'talle' => '3', 'stock' => 6 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Azul',            'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Azul',            'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Azul',            'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Petróleo',        'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Petróleo',        'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Petróleo',        'talle' => '3', 'stock' => 4 ),
+			array( 'color' => 'Negro',           'talle' => '1' ),
+			array( 'color' => 'Negro',           'talle' => '2' ),
+			array( 'color' => 'Negro',           'talle' => '3' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '1' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '2' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '3' ),
+			array( 'color' => 'Azul',            'talle' => '1' ),
+			array( 'color' => 'Azul',            'talle' => '2' ),
+			array( 'color' => 'Azul',            'talle' => '3' ),
+			array( 'color' => 'Petróleo',        'talle' => '1' ),
+			array( 'color' => 'Petróleo',        'talle' => '2' ),
+			array( 'color' => 'Petróleo',        'talle' => '3' ),
 		),
 	),
 	array(
@@ -162,18 +142,18 @@ $bamira_real_catalog = array(
 		'talles'     => array( '1', '2', '3' ),
 		'colores'    => array( 'Negro', 'Bordo Frambuesa', 'Azul', 'Petróleo' ),
 		'variations' => array(
-			array( 'color' => 'Negro',           'talle' => '1', 'stock' => 10 ),
-			array( 'color' => 'Negro',           'talle' => '2', 'stock' => 12 ),
-			array( 'color' => 'Negro',           'talle' => '3', 'stock' => 6 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '1', 'stock' => 8 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '2', 'stock' => 10 ),
-			array( 'color' => 'Bordo Frambuesa', 'talle' => '3', 'stock' => 6 ),
-			array( 'color' => 'Azul',            'talle' => '1', 'stock' => 8 ),
-			array( 'color' => 'Azul',            'talle' => '2', 'stock' => 10 ),
-			array( 'color' => 'Azul',            'talle' => '3', 'stock' => 6 ),
-			array( 'color' => 'Petróleo',        'talle' => '1', 'stock' => 8 ),
-			array( 'color' => 'Petróleo',        'talle' => '2', 'stock' => 10 ),
-			array( 'color' => 'Petróleo',        'talle' => '3', 'stock' => 6 ),
+			array( 'color' => 'Negro',           'talle' => '1' ),
+			array( 'color' => 'Negro',           'talle' => '2' ),
+			array( 'color' => 'Negro',           'talle' => '3' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '1' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '2' ),
+			array( 'color' => 'Bordo Frambuesa', 'talle' => '3' ),
+			array( 'color' => 'Azul',            'talle' => '1' ),
+			array( 'color' => 'Azul',            'talle' => '2' ),
+			array( 'color' => 'Azul',            'talle' => '3' ),
+			array( 'color' => 'Petróleo',        'talle' => '1' ),
+			array( 'color' => 'Petróleo',        'talle' => '2' ),
+			array( 'color' => 'Petróleo',        'talle' => '3' ),
 		),
 	),
 	array(
@@ -186,12 +166,12 @@ $bamira_real_catalog = array(
 		'talles'     => array( '1', '2', '3' ),
 		'colores'    => array( 'Negro', 'Chocolate' ),
 		'variations' => array(
-			array( 'color' => 'Negro',     'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Negro',     'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Negro',     'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Chocolate', 'talle' => '1', 'stock' => 4 ),
-			array( 'color' => 'Chocolate', 'talle' => '2', 'stock' => 6 ),
-			array( 'color' => 'Chocolate', 'talle' => '3', 'stock' => 4 ),
+			array( 'color' => 'Negro',     'talle' => '1' ),
+			array( 'color' => 'Negro',     'talle' => '2' ),
+			array( 'color' => 'Negro',     'talle' => '3' ),
+			array( 'color' => 'Chocolate', 'talle' => '1' ),
+			array( 'color' => 'Chocolate', 'talle' => '2' ),
+			array( 'color' => 'Chocolate', 'talle' => '3' ),
 		),
 	),
 	array(
@@ -204,12 +184,12 @@ $bamira_real_catalog = array(
 		'talles'     => array( '1', '2', '3' ),
 		'colores'    => array( 'Negro', 'Chocolate' ),
 		'variations' => array(
-			array( 'color' => 'Negro',     'talle' => '1', 'stock' => 6 ),
-			array( 'color' => 'Negro',     'talle' => '2', 'stock' => 6 ),
-			array( 'color' => 'Negro',     'talle' => '3', 'stock' => 4 ),
-			array( 'color' => 'Chocolate', 'talle' => '1', 'stock' => 4 ),
-			array( 'color' => 'Chocolate', 'talle' => '2', 'stock' => 5 ),
-			array( 'color' => 'Chocolate', 'talle' => '3', 'stock' => 4 ),
+			array( 'color' => 'Negro',     'talle' => '1' ),
+			array( 'color' => 'Negro',     'talle' => '2' ),
+			array( 'color' => 'Negro',     'talle' => '3' ),
+			array( 'color' => 'Chocolate', 'talle' => '1' ),
+			array( 'color' => 'Chocolate', 'talle' => '2' ),
+			array( 'color' => 'Chocolate', 'talle' => '3' ),
 		),
 	),
 	array(
@@ -222,9 +202,9 @@ $bamira_real_catalog = array(
 		'talles'     => array( '1', '2', '3' ),
 		'colores'    => array( 'Negro' ),
 		'variations' => array(
-			array( 'color' => 'Negro', 'talle' => '1', 'stock' => 8 ),
-			array( 'color' => 'Negro', 'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Negro', 'talle' => '3', 'stock' => 6 ),
+			array( 'color' => 'Negro', 'talle' => '1' ),
+			array( 'color' => 'Negro', 'talle' => '2' ),
+			array( 'color' => 'Negro', 'talle' => '3' ),
 		),
 	),
 	array(
@@ -237,9 +217,9 @@ $bamira_real_catalog = array(
 		'talles'     => array( '1', '2', '3' ),
 		'colores'    => array( 'Negro' ),
 		'variations' => array(
-			array( 'color' => 'Negro', 'talle' => '1', 'stock' => 8 ),
-			array( 'color' => 'Negro', 'talle' => '2', 'stock' => 8 ),
-			array( 'color' => 'Negro', 'talle' => '3', 'stock' => 6 ),
+			array( 'color' => 'Negro', 'talle' => '1' ),
+			array( 'color' => 'Negro', 'talle' => '2' ),
+			array( 'color' => 'Negro', 'talle' => '3' ),
 		),
 	),
 );
@@ -257,7 +237,6 @@ $bamira_log_counts = array(
 	'products_exists'    => 0,
 	'variations_created' => 0,
 	'variations_exists'  => 0,
-	'total_units'        => 0,
 	'errors'             => 0,
 );
 
@@ -344,6 +323,15 @@ foreach ( $bamira_real_categories as $cat_group ) {
 	}
 }
 
+foreach ( array( 'talle' => 'Talle', 'color-diseno' => 'Color / Diseño' ) as $slug => $label ) {
+    if ( ! bamira_real_attr_id( $slug ) ) {
+        $result = wc_create_attribute( array( 'name' => $label, 'slug' => $slug, 'type' => 'select' ) );
+        if ( is_wp_error( $result ) ) { throw new RuntimeException( $result->get_error_message() ); }
+        delete_transient( 'wc_attribute_taxonomies' );
+        WC_Cache_Helper::invalidate_cache_group( 'woocommerce-attributes' );
+    }
+}
+
 // 3.2 Términos de Talle (pa_talle)
 $talle_tax = 'pa_talle';
 if ( ! taxonomy_exists( $talle_tax ) ) {
@@ -428,7 +416,21 @@ foreach ( $bamira_real_catalog as $p_data ) {
 	$parent    = null;
 
 	if ( $parent_id > 0 ) {
-		$parent = wc_get_product( $parent_id );
+        $parent = wc_get_product( $parent_id );
+        if ( ! $parent || ! $parent->is_type( 'variable' ) ) {
+            ++$bamira_log_counts['errors'];
+            bamira_real_log( 'PRODUCT', $parent_sku, 'ERROR', 'SKU no corresponde a producto variable' );
+            continue;
+        }
+        if ( 'draft' !== $parent->get_status() ) {
+            bamira_real_log( 'PRODUCT', $parent_sku, 'SKIPPED', 'Publicado u otro estado: se preserva sin cambios' );
+            ++$bamira_log_counts['errors'];
+            continue;
+        }
+        $parent->set_manage_stock( false );
+        $parent->set_stock_quantity( null );
+        $parent->update_meta_data( '_bamira_stock_pending', 'yes' );
+        $parent->save();
 		bamira_real_log( 'PRODUCT', $p_data['name'] . ' [' . $parent_sku . ']', 'EXISTS', 'id=' . $parent_id . ' status=' . $parent->get_status() );
 		++$bamira_log_counts['products_exists'];
 	} else {
@@ -447,7 +449,7 @@ foreach ( $bamira_real_catalog as $p_data ) {
 		$attr_talle = new WC_Product_Attribute();
 		$attr_talle->set_id( $attr_ids['pa_talle'] );
 		$attr_talle->set_name( 'pa_talle' );
-		$attr_talle->set_options( $expected_talles );
+		$attr_talle->set_options( array_map( function( $slug ) use ( $talle_tax ) { return (int) get_term_by( 'slug', $slug, $talle_tax )->term_id; }, $expected_talles ) );
 		$attr_talle->set_visible( true );
 		$attr_talle->set_variation( true );
 		$wc_attributes[] = $attr_talle;
@@ -456,7 +458,7 @@ foreach ( $bamira_real_catalog as $p_data ) {
 		$attr_color = new WC_Product_Attribute();
 		$attr_color->set_id( $attr_ids['pa_color-diseno'] );
 		$attr_color->set_name( 'pa_color-diseno' );
-		$attr_color->set_options( $expected_colores );
+		$attr_color->set_options( array_map( function( $slug ) use ( $color_tax ) { return (int) get_term_by( 'slug', $slug, $color_tax )->term_id; }, $expected_colores ) );
 		$attr_color->set_visible( true );
 		$attr_color->set_variation( true );
 		$wc_attributes[] = $attr_color;
@@ -507,19 +509,23 @@ foreach ( $bamira_real_catalog as $p_data ) {
 	foreach ( $p_data['variations'] as $v_info ) {
 		$v_color    = $v_info['color'];
 		$v_talle    = $v_info['talle'];
-		$v_stock    = (int) $v_info['stock'];
 		$color_code = isset( $bamira_real_colores[ $v_color ] ) ? $bamira_real_colores[ $v_color ] : strtoupper( sanitize_title( $v_color ) );
 		$var_sku    = sprintf( '%s-%s-T%s', $parent_sku, $color_code, $v_talle );
 
-		$bamira_log_counts['total_units'] += $v_stock;
 
 		$found_v_id = wc_get_product_id_by_sku( $var_sku );
 		if ( $found_v_id > 0 ) {
 			$found_v = wc_get_product( $found_v_id );
 			$found_parent = ( $found_v && method_exists( $found_v, 'get_parent_id' ) ) ? (int) $found_v->get_parent_id() : 0;
 			if ( $found_parent === (int) $parent_id ) {
-				// Idempotencia segura: si la variación ya existe, se preserva el stock real actual
-				// para evitar que una re-ejecución sobrescriba accidentalmente el inventario operativo.
+				// Limpiar cantidades previas solo en borradores sin precio.
+                if ( 'draft' === $parent->get_status() && '' === $found_v->get_price() ) {
+                    $found_v->set_manage_stock( false );
+                    $found_v->set_stock_quantity( null );
+                    $found_v->set_stock_status( 'outofstock' );
+                    $found_v->update_meta_data( '_bamira_stock_pending', 'yes' );
+                    $found_v->save();
+                }
 				$current_stock = $found_v->get_stock_quantity();
 				$stock_label   = ( null !== $current_stock ) ? (string) $current_stock : 'n/a';
 				bamira_real_log( 'VARIATION', $var_sku, 'EXISTS', 'id=' . $found_v_id . ' stock_actual=' . $stock_label . ' (preservado)' );
@@ -538,9 +544,10 @@ foreach ( $bamira_real_catalog as $p_data ) {
 			'pa_talle'        => $talle_slugs[ $v_talle ],
 			'pa_color-diseno' => $color_slugs[ $v_color ],
 		) );
-		$variation->set_manage_stock( true );
-		$variation->set_stock_quantity( $v_stock );
-		$variation->set_stock_status( 'instock' );
+		$variation->set_manage_stock( false );
+		$variation->set_stock_quantity( null );
+		$variation->set_stock_status( 'outofstock' );
+		$variation->update_meta_data( '_bamira_stock_pending', 'yes' );
 		// Precios e imágenes se mantienen vacíos / no configurados por diseño
 
 		$new_v_id = $variation->save();
@@ -551,9 +558,11 @@ foreach ( $bamira_real_catalog as $p_data ) {
 			continue;
 		}
 
-		bamira_real_log( 'VARIATION', $var_sku, 'CREATED', 'id=' . $new_v_id . ' stock=' . $v_stock );
+		bamira_real_log( 'VARIATION', $var_sku, 'CREATED', 'id=' . $new_v_id . ' stock=pendiente' );
 		++$bamira_log_counts['variations_created'];
 	}
+    WC_Product_Variable::sync( $parent_id );
+    wc_delete_product_transients( $parent_id );
 }
 
 // ---------------------------------------------------------------------------
@@ -563,7 +572,7 @@ foreach ( $bamira_real_catalog as $p_data ) {
 $total_vars_processed = $bamira_log_counts['variations_created'] + $bamira_log_counts['variations_exists'];
 $total_prods_processed = $bamira_log_counts['products_created'] + $bamira_log_counts['products_exists'];
 
-$validation_ok = ( 8 === $total_prods_processed && 66 === $total_vars_processed && 427 === $bamira_log_counts['total_units'] && 0 === $bamira_log_counts['errors'] );
+$validation_ok = ( 8 === $total_prods_processed && 66 === $total_vars_processed && 0 === $bamira_log_counts['errors'] );
 
 $summary = sprintf(
 	"=========================================\n" .
@@ -571,13 +580,12 @@ $summary = sprintf(
 	"=========================================\n" .
 	"Productos padre procesados: %d (esperados: 8)\n" .
 	"Variaciones procesadas:     %d (esperadas: 66)\n" .
-	"Unidades de stock totales:  %d (esperadas: 427)\n" .
+	"Stock: pendiente de confirmación (sin cantidades)\n" .
 	"Errores reportados:         %d\n" .
 	"Estado de validación:       %s\n" .
 	"=========================================",
 	$total_prods_processed,
 	$total_vars_processed,
-	$bamira_log_counts['total_units'],
 	$bamira_log_counts['errors'],
 	$validation_ok ? 'ASSERT_OK (VÁLIDO)' : 'ASSERT_FAILED (REVISAR)'
 );
