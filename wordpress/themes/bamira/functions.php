@@ -22,7 +22,7 @@ function bamira_collection( $title, $anchor, $skus ) {
         echo '<article class="product-card"><div class="product-art">';
         if ( $p->get_image_id() ) { echo wp_get_attachment_image( $p->get_image_id(), 'woocommerce_thumbnail' ); }
         else { echo '<span aria-hidden="true">B.</span><small>Imagen próximamente</small>'; }
-        echo '</div><h3>' . esc_html( $p->get_name() ) . '</h3><div class="colors" aria-label="Colores previstos">';
+        echo '</div><h3>' . '<a href="' . esc_url('draft' === $p->get_status() ? get_preview_post_link($p->get_id()) : get_permalink($p->get_id())) . '">' . esc_html( $p->get_name() ) . '</a>' . '</h3><div class="colors" aria-label="Colores previstos">';
         $names = wc_get_product_terms( $p->get_id(), 'pa_color-diseno', array( 'fields' => 'names' ) );
         foreach ( $names as $name ) {
             $swatches = array('negro'=>'#202024', 'bordo-frambuesa'=>'#781e3e', 'azul'=>'#243f77', 'petroleo'=>'#235957', 'chocolate'=>'#54392e');
@@ -34,3 +34,27 @@ function bamira_collection( $title, $anchor, $skus ) {
     if ( ! $count ) { echo '<p>Estamos preparando esta colección.</p>'; }
     echo '</div></div></section>';
 }
+
+// BAMIRA: plantilla de ficha para los ocho modelos iniciales.
+add_filter('template_include', function ($template) {
+    if (!is_singular('product') || !function_exists('wc_get_product')) {
+        return $template;
+    }
+
+    $product = wc_get_product(get_queried_object_id());
+    $skus = array(
+        'BAM-TOP-MILE', 'BAM-TOP-GIGI',
+        'BAM-VEDETINA', 'BAM-COLALESS',
+        'BAM-TOP-DEP', 'BAM-CALZA-DEP',
+        'BAM-SHORT-BREN', 'BAM-SHORT-KAI'
+    );
+
+    if ($product && in_array($product->get_sku(), $skus, true)) {
+        $custom = get_theme_file_path('single-product.php');
+        if (is_readable($custom)) {
+            return $custom;
+        }
+    }
+
+    return $template;
+}, 99);
