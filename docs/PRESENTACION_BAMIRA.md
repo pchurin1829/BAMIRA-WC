@@ -33,6 +33,38 @@ y 1440 px, sin desborde. El catálogo se ve únicamente en sesión de revisión 
 WooCommerce está en modo «Coming soon», así que el visitante anónimo recibe la pantalla de
 espera y nunca la portada con los borradores.
 
+En la base local no queda ningún producto publicado: los ocho modelos oficiales y los dos
+productos heredados están en borrador.
+
+## Productos heredados pasados a borrador
+
+El estado anterior queda registrado en la tabla siguiente y no depende de archivos externos.
+El cambio se aplicó en la base local mediante la API CRUD de WooCommerce
+(`wc_get_product()` → `set_status('draft')` → `save()`). Nada se eliminó: no hay productos
+en la papelera y ni las imágenes ni las variaciones se tocaron.
+
+| ID | Nombre | SKU | Tipo | Estado anterior | Estado actual | Precio | Stock | Imagen | Variaciones |
+|---|---|---|---|---|---|---|---|---|---|
+| 17 | Remera entrenamiento mujer | (sin SKU) | variable | publish | draft | 19500 | sin control de stock | 31 (remera-roja.jpg) | 12 (IDs 18-29) |
+| 12 | Remera mujer - Test | REM-ENTR-001 | simple | publish | draft | 22000 (regular 25000) | 10 | 30 (remera-negra.jpg) | 0 |
+
+Los precios, el stock y la visibilidad de catálogo de esos dos productos quedan intactos:
+solo se cambió el estado a borrador. Sus variaciones siguen con estado `publish`, igual que
+las de los modelos oficiales, y no se modificaron.
+
+**Este cambio vive en la base de datos local y no se transporta con Git.** Git mueve tema,
+plugin, scripts y documentación; los estados, precios, stock e imágenes de WordPress
+dependen de la base de datos de cada entorno. Para aplicarlo donde corresponda hay que
+ejecutarlo explícitamente con WP-CLI, por ejemplo:
+
+```php
+$product = wc_get_product( 17 );
+$product->set_status( 'draft' );
+$product->save();
+```
+
+No se ejecutó en el VPS ni en ninguna otra instalación.
+
 ## Instalación local (PowerShell, Docker iniciado)
 
 1. Respaldar base y archivos si ya existe WordPress. Guardar el nombre del tema activo y opciones.
@@ -73,9 +105,8 @@ Las validaciones estáticas no sustituyen estas pruebas. Los Excel históricos p
 
 - El modo «Coming soon» de WooCommerce sigue activo a propósito: los visitantes anónimos no
   ven la portada. Desactivarlo solo cuando se decida publicar la presentación.
-- Quedan dos productos antiguos publicados y visibles en la tienda de WooCommerce
-  («Remera entrenamiento mujer» y «Remera mujer - Test»), con fotos y ajenos a la colección
-  BAMIRA. Pendiente de retirarlos o volverlos a borrador cuando se autorice; no se tocaron.
+- Los dos productos antiguos ya están en borrador en la base local, pero el VPS y cualquier
+  otra instalación conservan su estado hasta que se aplique allí el mismo cambio.
 - Siguen sin fotos, precios ni cantidades de stock: esos datos no se inventaron.
 - El espacio sin foto de la ficha mantiene la proporción 4/5 de las tarjetas en escritorio
   (560 × 700 px a 1440 px); el límite de 180 px aplica solo a 700 px o menos.
