@@ -20,3 +20,14 @@ Text Domain: bamira
 .bamira-pending{background:var(--sand);padding:20px;margin-top:28px}
 .bamira-pending p{margin-bottom:0}
 @media(max-width:700px){.bamira-detail{grid-template-columns:1fr;gap:28px}.bamira-detail>.product-art{width:100%;max-width:420px;margin:auto}}
+/* BAMIRA: placeholder compacto en ficha movil */
+@media(max-width:700px){
+    .bamira-detail > .product-art--empty{
+        aspect-ratio:auto;
+        height:180px;
+    }
+}
+/* BAMIRA: la imagen o placeholder de la tarjeta abre la ficha */
+.product-card .product-art{color:inherit;text-decoration:none}
+.product-card .product-art:hover{opacity:.9}
+.product-card .product-art:focus-visible{outline:3px solid var(--berry);outline-offset:4px}

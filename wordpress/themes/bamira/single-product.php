@@ -10,10 +10,10 @@ $p = wc_get_product(get_queried_object_id());
         <p class="preview-note">Vista de revisión del producto en borrador.</p>
     <?php endif; ?>
 
-    <p><a href="<?php echo esc_url(home_url('/')); ?>">← Volver a la colección</a></p>
+    <p><a href="<?php echo esc_url(bamira_collection_url($p)); ?>">← Volver a la colección</a></p>
 
     <div class="bamira-detail">
-        <div class="product-art">
+        <div class="product-art<?php echo $p->get_image_id() ? '' : ' product-art--empty'; ?>">
             <?php if ($p->get_image_id()): ?>
                 <?php echo wp_get_attachment_image($p->get_image_id(), 'large'); ?>
             <?php else: ?>
@@ -30,13 +30,7 @@ $p = wc_get_product(get_queried_object_id());
             <h2>Colores previstos</h2>
             <ul class="bamira-options">
             <?php
-            $swatches = array(
-                'negro' => '#202024',
-                'bordo-frambuesa' => '#781e3e',
-                'azul' => '#243f77',
-                'petroleo' => '#235957',
-                'chocolate' => '#54392e',
-            );
+            $swatches = bamira_color_swatches();
             $colors = wc_get_product_terms($p->get_id(), 'pa_color-diseno', array('fields' => 'names'));
             foreach ($colors as $name):
                 $hex = $swatches[sanitize_title($name)] ?? '#ddd';
